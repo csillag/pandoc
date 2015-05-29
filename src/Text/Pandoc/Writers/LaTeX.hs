@@ -449,7 +449,7 @@ blockToLaTeX (BlockQuote lst) = do
          modify (\s -> s{stInQuote = True})
          contents <- blockListToLaTeX lst
          modify (\s -> s{stInQuote = oldInQuote})
-         return $ "\\begin{quote}" $$ contents $$ "\\end{quote}"
+         return $ "\\begin{shadequote}" $$ contents $$ "\\end{shadequote}"
 blockToLaTeX (CodeBlock (identifier,classes,keyvalAttr) str) = do
   opts <- gets stOptions
   ref <- toLabel identifier
@@ -599,7 +599,9 @@ blockToLaTeX (Table caption aligns widths heads rows) = do
   rows' <- mapM (tableRowToLaTeX False aligns widths) rows
   let colDescriptors = text $ concat $ map toColDescriptor aligns
   modify $ \s -> s{ stTable = True }
-  return $ "\\begin{longtable}[]" <>
+  return $ "\\vspace{-8pt}"
+         $$ "\\begin{minipage}[c]{0.85\\columnwidth}"
+         $$ "\\begin{longtable}[]" <>
               braces ("@{}" <> colDescriptors <> "@{}")
               -- the @{} removes extra space at beginning and end
          $$ capt
@@ -607,8 +609,9 @@ blockToLaTeX (Table caption aligns widths heads rows) = do
          $$ headers
          $$ endhead
          $$ vcat rows'
-         $$ "\\bottomrule"
+         $$ "\\vspace{-25pt}"
          $$ "\\end{longtable}"
+         $$ "\\end{minipage}"
 
 toColDescriptor :: Alignment -> String
 toColDescriptor align =

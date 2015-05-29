@@ -606,7 +606,7 @@ blockToLaTeX (BlockQuote lst) = do
          modify (\s -> s{stInQuote = True})
          contents <- blockListToLaTeX lst
          modify (\s -> s{stInQuote = oldInQuote})
-         return $ "\\begin{quote}" $$ contents $$ "\\end{quote}"
+         return $ "\\begin{shadequote}" $$ contents $$ "\\end{shadequote}"
 blockToLaTeX (CodeBlock (identifier,classes,keyvalAttr) str) = do
   opts <- gets stOptions
   lab <- labelFor identifier
@@ -783,7 +783,9 @@ blockToLaTeX (Table _ blkCapt specs thead tbody tfoot) = do
   let colDescriptors = literal $ T.concat $ map toColDescriptor aligns
   modify $ \s -> s{ stTable = True }
   notes <- notesToLaTeX <$> gets stNotes
-  return $ "\\begin{longtable}[]" <>
+  return $ "\\vspace{-8pt}"
+         $$ "\\begin{minipage}[c]{0.85\\columnwidth}"
+         $$ "\\begin{longtable}[]" <>
               braces ("@{}" <> colDescriptors <> "@{}")
               -- the @{} removes extra space at beginning and end
          $$ capt
@@ -791,10 +793,11 @@ blockToLaTeX (Table _ blkCapt specs thead tbody tfoot) = do
          $$ head'
          $$ "\\endhead"
          $$ vcat rows'
-         $$ "\\bottomrule"
+         $$ "\\vspace{1pt}"
          $$ "\\end{longtable}"
          $$ captNotes
          $$ notes
+         $$ "\\end{minipage}"
 
 getCaption :: PandocMonad m
            => Bool -> [Inline] -> LW m (Doc Text, Doc Text, Doc Text)

@@ -609,7 +609,7 @@ blockToLaTeX (Table caption aligns widths heads rows) = do
          $$ headers
          $$ endhead
          $$ vcat rows'
-         $$ "\\vspace{-25pt}"
+         $$ "\\vspace{1pt}"
          $$ "\\end{longtable}"
          $$ "\\end{minipage}"
 

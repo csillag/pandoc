@@ -572,7 +572,7 @@ blockToLaTeX (DefinitionList lst) = do
   return $ text ("\\begin{description}" ++ inc) $$ spacing $$ vcat items $$
                "\\end{description}"
 blockToLaTeX HorizontalRule = return $
-  "\\begin{center}\\rule{0.5\\linewidth}{\\linethickness}\\end{center}"
+  "\\horizontalrule{}"
 blockToLaTeX (Header level (id',classes,_) lst) = do
   modify $ \s -> s{stInHeading = True}
   hdr <- sectionHeader ("unnumbered" `elem` classes) id' level lst
